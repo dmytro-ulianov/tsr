@@ -1,0 +1,54 @@
+{
+  "name": "@throned/tsr",
+  "version": "0.2.0",
+  "main": "dist/index.js",
+  "module": "dist/tsr.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "analyze": "size-limit --why",
+    "build": "tsdx build",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "start": "tsdx watch",
+    "test": "tsdx test"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "4.10.1",
+    "husky": "5.1.3",
+    "size-limit": "4.10.1",
+    "tsdx": "0.14.1",
+    "tslib": "2.1.0",
+    "typescript": "4.2.3"
+  },
+  "author": "dmytro-ulianov",
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "size-limit": [
+    {
+      "path": "dist/resource-0.2.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/resource-0.2.esm.js",
+      "limit": "10 KB"
+    }
+  ]
+}
