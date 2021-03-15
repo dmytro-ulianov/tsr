@@ -11,7 +11,7 @@
   "scripts": {
     "analyze": "size-limit --why",
     "build": "tsdx build",
-    "lint": "tsdx lint",
+    "lint": "tsdx lint src",
     "prepare": "tsdx build",
     "size": "size-limit",
     "start": "tsdx watch",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "4.10.1",
+    "@typescript-eslint/parser": "4.18.0",
     "husky": "5.1.3",
     "size-limit": "4.10.1",
     "tsdx": "0.14.1",
