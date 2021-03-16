@@ -1,8 +1,6 @@
-# TSR: Typescript Resource
+![TSR](./assets/banner-left.png)
 
-![SWR](https://ulianov.dev/tsr/banner.png)
-
-**Resource** is an [ADT (Algebraic Data Type)](https://wiki.haskell.org/Algebraic_data_type), that is heavily inspired by [Remote Data](https://github.com/krisajenkins/remotedata). You can read more about it in this [post](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html).
+**TSR** stands for Type-Safe Resource. And **Resource** is an [ADT (Algebraic Data Type)](https://wiki.haskell.org/Algebraic_data_type), that is heavily inspired by [Remote Data](https://github.com/krisajenkins/remotedata). You can read more about it in this [post](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html).
 
 ## Install
 
@@ -10,40 +8,49 @@ You can install this package using `npm` or `yarn`. To get the full type inferen
 curried functions it's recommended to use `pipe` function from [fp-ts](https://github.com/gcanti/fp-ts).
 
 ```bash
-npm install --save @throned/resource-ts fp-ts
+npm install --save @throned/tsr fp-ts
+# or using yarn
+yarn add @throned/tsr fp-ts
 ```
 
-```bash
-yarn add @throned/resource-ts fp-ts
-```
-
-## React example
+## Usage
 
 ```tsx
 import React, { useState, useEffect } from 'react'
 import { TSR, Resource } from '@throned/tsr'
 
+/* Define your resource type */
 type Movie = { episode_id: string; title: string }
 type MoviesResource = Resource<Movie[], Error>
 
 const MoviesApp = () => {
+  /* Initialize movies resource */
   const [movies, setMovies] = useState<MoviesResource>(TSR.initial)
 
   useEffect(() => {
+    /* Set resource in loading state */
     setMovies(TSR.loading)
     /* Fetch all Star Wars films https://swapi.dev/documentation#films */
     fetch('https://swapi.dev/api/films/')
       .then(async res => {
-        const { results } = await res.json()
-        setMovies(TSR.success(results))
+        if (res.ok) {
+          const { results } = await res.json()
+          /* Set response payload */
+          setMovies(TSR.success(results))
+        }
+        throw new Error('Not ok!')
       })
-      .catch(error => setMovies(TSR.failure(error)))
+      .catch(error => {
+        /* Or set the error */
+        setMovies(TSR.failure(error))
+      })
   }, [])
 
   return (
     <div>
       <h1>Star Wars films</h1>
       {TSR.fold(movies, {
+        /* Unpack resource value and handle all possible states */
         initial: () => /* nothing is there */ null,
         loading: () => <div>loading movies...</div>,
         failure: error => <div>error: {error.message}</div>,
@@ -59,6 +66,8 @@ const MoviesApp = () => {
   )
 }
 ```
+
+You can find examples apps in [Examples directory](/examples).
 
 ## Resource
 
@@ -81,7 +90,7 @@ failure(new Error('noop')) // {tag: 'Failure', error: Error('nope')}
 of({ title: 'Matrix' }) // works as success
 ```
 
-Also there are to useful helper methods that can construct a resource: `fromNullable` and `tryCatch`.
+Also there are two useful helper methods that can construct a resource: `fromNullable` and `tryCatch`.
 
 **`fromNullable: (a: A | null | undefined) => Success<A> | Initial`**
 
@@ -130,7 +139,7 @@ const number = TSR.of(42)
 const mulOptions = TSR.of({ times: 10 })
 ```
 
-There are few ways of how you can call `multiply` function with values of these resources. These ways are described below, but feel free to skip them and see `combine` if you just interested in the actual library approach.
+There are few ways of how you can call `multiply` function with values of these resources. These ways are described below, but feel free to skip them and see `combine` if you interested in the actual library approach only.
 
 **`chain`**
 
@@ -154,7 +163,7 @@ TSR.tap(result, console.log) // 420
 ```ts
 import { TSR } from '@throned/tsr'
 
-/* First, we have to make a curried version of multiply */
+/* We have to make a curried version of multiply */
 const multiply = (x: number) => ({ times }: { times: number }) => {
   return x * times
 }
@@ -163,7 +172,7 @@ const number = of(42)
 const mulOptions = of({ times: 10 })
 
 /**
- * You can define useful function that uses ap and map to apply a function to resources
+ * You can define lift2 function that uses ap and map to apply a function to resources
  * To see why this functions is not included in the lib check the next example
  */
 const lift2 = <A, B, C, E>(
@@ -181,7 +190,7 @@ TSR.tap(result, console.log) // 420
 **`combine`**
 
 You don't have to understand FP concepts like applicative to use multiple resources, instead you can use a simple function that merges resources in a predictive way.
-If all passed resource are Success then result is Success that holds a tuple with all values, otherwise result is a fallback to first resource that is not Success.
+If all passed resources are Success then result is Success that holds a tuple with all values, otherwise result is a fallback to first resource that is not Success.
 
 ```ts
 import { of, combine, map, tap } from '@throned/tsr'
@@ -198,10 +207,13 @@ TSR.tap(result, console.log) // 420
 In addition to than `combine` can merge more than two resources into one.
 
 ```ts
-import { combine, of } from '@throned/tsr'
+import { combine, of, failure } from '@throned/tsr'
 
-combine(of(1), of(2), of({ three: true })) // Success<[number, number, {three: boolean}]>
-combine(of(1), of(2), of('3'), of('4'), of(true)) // Success<[number, number, string, string, boolean]>
+combine(of(1), of(2), of({ three: true })) // Resource<[number, number, {three: boolean}], unknown>
+combine(of(1), of(2), of('3'), of('4'), of(true)) // Resource<[number, number, string, string, boolean], unknown>
+
+/* Here is the example of fallback to non-Success resource */
+combine(of(1), failure('noop'), of(2)) // {tag: 'Failure', error: 'noop'}
 ```
 
 ## API style
@@ -223,3 +235,93 @@ pipe(
 ```
 
 ## API
+
+**`alt`**
+
+**`ap`**
+
+**`bimap`**
+
+**`chain`**
+
+**`combine`**
+
+**`failure`**
+
+**`fold`**
+
+**`fromNullable`**
+
+**`getOrElse`**
+
+**`initial`**
+
+**`loading`**
+
+**`map`**
+
+**`mapFailure`**
+
+**`of`**
+
+**`recover`**
+
+**`success`**
+
+**`tag`**
+
+**`tap`**
+
+**`tapFailure`**
+
+**`tryCatch`**
+
+**`unpackError`**
+
+**`unpackValue`**
+
+### `TSR`
+
+**`TSR.alt`**
+
+**`TSR.ap`**
+
+**`TSR.bimap`**
+
+**`TSR.chain`**
+
+**`TSR.combine`**
+
+**`TSR.failure`**
+
+**`TSR.fold`**
+
+**`TSR.fromNullable`**
+
+**`TSR.getOrElse`**
+
+**`TSR.initial`**
+
+**`TSR.loading`**
+
+**`TSR.map`**
+
+**`TSR.mapFailure`**
+
+**`TSR.of`**
+
+**`TSR.recover`**
+
+**`TSR.success`**
+
+**`TSR.tag`**
+
+**`TSR.tap`**
+
+**`TSR.tapFailure`**
+
+**`TSR.tryCatch`**
+
+**`TSR.unpackError`**
+
+**`TSR.unpackValue`**
