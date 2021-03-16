@@ -73,7 +73,7 @@ You can find examples apps in [Examples directory](/examples).
 
 Simply put, **Resource** is representation of some asynchronous data in type-safe way that also allows you to drop `boolean` flags (such as `isLoading` or `isError`) and forces you to handle all possible states.
 
-**`Resource<A, E>`** is a sum type of four possible states: `Initial`, `Loading`, `Success<`**`A`**`>` and `Failure<`**`E`**`>`, where **A** - is a type of data and **E** - is a type of error.
+**`Resource<A, E>`** is a sum type of four possible states: `Initial`, `Loading`, `Success<A>` and `Failure<E>`, where **A** - is a type of data and **E** - is a type of error.
 
 ## Constructors
 
@@ -117,7 +117,7 @@ const exsplosiveRandom = (): number => {
   return rand
 }
 
-/* tryCatch accepts a thunk that return a value but may fail */
+/* tryCatch accepts a thunk that returns a value but may fail */
 const rand: Resource<number, Error> = tryCatch(exsplosiveRandom)
 rand // Success with random number or Failure(Error('Boom!'))
 ```
