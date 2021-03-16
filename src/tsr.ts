@@ -214,6 +214,9 @@ export function combine<A, B, C, D, E, F, G, H, EE>(
 export function combine<E>(...resources: Resource<any, E>[]) {
   let combined: Resource<AnyResource[], E> = success([] as AnyResource[])
   for (const resource of resources) {
+    if (resource.tag !== 'Success') {
+      return resource
+    }
     combined = ap(map(append)(combined))(resource)
   }
   return combined

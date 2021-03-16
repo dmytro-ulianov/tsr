@@ -26,4 +26,6 @@ export {
   tapFailure,
   tryCatch,
   TSR,
+  unpackError,
+  unpackValue,
 } from './tsr'
