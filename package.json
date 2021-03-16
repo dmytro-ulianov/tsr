@@ -1,6 +1,6 @@
 {
   "name": "@throned/tsr",
-  "version": "0.2.0",
+  "version": "0.0.0",
   "main": "dist/index.js",
   "module": "dist/tsr.esm.js",
   "typings": "dist/index.d.ts",
@@ -52,5 +52,25 @@
       "path": "dist/resource-0.2.esm.js",
       "limit": "10 KB"
     }
-  ]
+  ],
+  "keywords": [
+    "algebraic-data-type",
+    "fp-ts",
+    "fp",
+    "functional-programming",
+    "remote-data-ts",
+    "remote-data",
+    "resource",
+    "type-safe",
+    "typescript"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmytro-ulianov/tsr"
+  }
 }
