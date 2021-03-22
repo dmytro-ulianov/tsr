@@ -1,6 +1,6 @@
-*.log
-.DS_Store
-node_modules
-dist
-.vscode
 .cache
+.DS_Store
+.vscode
+*.log
+dist
+node_modules
