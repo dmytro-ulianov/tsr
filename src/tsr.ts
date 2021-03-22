@@ -144,6 +144,7 @@ export const fold = <A, E, RI, RL, RF, RS>(
   loading: () => RL,
   failure: (error: E) => RF,
   success: (value: A) => RS,
+  // eslint-disable-next-line max-params
 ) => (resource: Resource<A, E>): RI | RL | RF | RS => {
   switch (resource.tag) {
     case 'Initial': {
@@ -211,7 +212,7 @@ export function combine<A, B, C, D, E, F, G, H, EE>(
   rg: Resource<G, EE>,
   rh: Resource<H, EE>,
 ): Resource<[A, B, C, D, E, F, G, H], EE>
-export function combine<E>(...resources: Resource<any, E>[]) {
+export function combine<E>(...resources: Array<Resource<any, E>>) {
   let combined: Resource<AnyResource[], E> = success([] as AnyResource[])
   for (const resource of resources) {
     if (resource.tag !== 'Success') {
@@ -369,6 +370,7 @@ interface TSR {
   unpackValue<A, E>(resource: Resource<A, E>): A
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const TSR: TSR = {
   alt: (resource, def) => alt(def)(resource),
   ap: (resource, fresource) => ap(fresource)(resource),
