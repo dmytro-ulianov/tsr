@@ -43,10 +43,10 @@ export const of = success
  * Tags dictionary
  */
 export const tag = {
-  initial: 'initial',
-  loading: 'loading',
-  failure: 'failure',
-  success: 'success',
+  initial: 'Initial',
+  loading: 'Loading',
+  failure: 'Failure',
+  success: 'Success',
 } as const
 
 export const fromNullable = <A>(value: A | null | undefined) => {
